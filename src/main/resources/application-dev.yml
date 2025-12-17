@@ -1,0 +1,81 @@
+server:
+  port: 8081
+
+# --- Redis Connection ---
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:amc-app-dev-elastic-cache-redis.pg7eun.ng.0001.aps1.cache.amazonaws.com}
+      port: ${REDIS_PORT:6379}
+      #      password: dnQjXNJ3DHAlf9c0lhsoXyqtmgz0He3G
+      #      username: default
+      cache:
+        timeToLive: ${REDIS_TIME_TO_LIVE:86400} # 1 day in seconds
+#  main:
+#    allow-bean-definition-overriding: true # Good to have during development
+  web:
+    client:
+      resttemplate:
+        connect-timeout: 5s # You can use duration units like 's' for seconds
+        read-timeout: 10s
+  mail:
+    host: ${SPRING_BOOT_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_BOOT_MAIL_PORT:587}
+    username: ${SPRING_BOOT_MAIL_USERNAME:jiteshs086763@gmail.com}
+    password: ${SPRING_BOOT_MAIL_PASSWORD:12345678910}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# --- Email Alerting ---
+alerting:
+  mail:
+    to: ${SPRING_BOOT_MAIL_ALERT_TO:jitesh.shetty@deptagency.com}
+    from: ${SPRING_BOOT_MAIL_ALERT_FROM:jiteshs086763@gmail.com}
+
+
+# --- AEM Integration ---
+aem:
+  api:
+    username: ${AEM_API_USERNAME:springboot-user}
+    password: ${AEM_API_PASSWORD:MySecurePassword123}
+    url:
+      baseurl: http://localhost:4505
+      #      individualFundURL: /bin/individual-fund-details
+      #      filteredCFFundsURL: /bin/filtered-cf-funds-details
+      #      individualFundManagerURL: /bin/fund-manager-details
+      individualFundURL: /content/aem-cloud-motilal-oswal/api/fund.json
+      filteredCFFundsURL: /bin/cfmodeldata-filtered
+      individualFundManagerURL: /bin/getFundManagerDetails
+      pmsListingURL: /bin/pms-strategies-data
+      pmsStrategyURL: /bin/pms-strategies-data-by-schcode
+
+# --- External APIs ---
+motilaloswal:
+  api:
+    url:
+      performanceGraphNew: ${MOTILAL_OSWAL_API_URL_PERFORMANCE_GRAPH_NEW:https://www.motilaloswalmf.com/mutualfund/api/v1/PerformanceGraphNew}
+
+# --- API Security ---
+api:
+  security:
+    aem-key: ${AEM_SECRET_KEY:AEM_KEY_12345}
+
+# OpenSearch Config
+opensearch:
+  hostname: ${OPENSEARCH_HOSTNAME:10.4.0.16}
+  port: ${OPENSEARCH_PORT:9200}
+  scheme: ${OPENSEARCH_SCHEME:http}
+  index-name: ${OPENSEARCH_INDEX_NAME:aem-pages}
+
+# -- Adobe Configuration (Dev) --
+adobe:
+  ims:
+    clientId: ${ADOBE_IMS_CLIENT_ID:dev-client-id}         # fallback to dummy if not set
+    clientSecret: ${ADOBE_IMS_CLIENT_SECRET:dev-secret}   # fallback value
+    scope: AdobeID,openid,aem_cloud_api
+    token:
+      url: https://ims-na1-stg1.adobelogin.com/ims/token/v3

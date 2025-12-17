@@ -1,0 +1,84 @@
+server:
+  port: 8081
+
+# --- Redis Connection ---
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      #      host: redis-13343.crce217.ap-south-1-1.ec2.redns.redis-cloud.com
+      #      port: 13343
+      #      password: dnQjXNJ3DHAlf9c0lhsoXyqtmgz0He3G
+      #      username: default
+      cache:
+        timeToLive: 86400 # 1 day in seconds
+  main:
+    allow-bean-definition-overriding: true # Good to have during development
+  web:
+    client:
+      resttemplate:
+        connect-timeout: 5s # You can use duration units like 's' for seconds
+        read-timeout: 10s
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jiteshs086763@gmail.com
+    password: nwlansqvfipsmomb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# --- Email Alerting ---
+alerting:
+  mail:
+    to: jitesh.shetty@deptagency.com
+    from: jiteshs086763@gmail.com
+
+
+# --- AEM Integration ---
+aem:
+  api:
+    username: springboot-user
+    password: MySecurePassword123
+    url:
+      baseurl: http://localhost:4505
+      #      individualFundURL: /bin/individual-fund-details
+      #      filteredCFFundsURL: /bin/filtered-cf-funds-details
+      #      individualFundManagerURL: /bin/fund-manager-details
+      individualFundURL: /content/aem-cloud-motilal-oswal/api/fund.json
+      filteredCFFundsURL: /bin/cfmodeldata-filtered
+      individualFundManagerURL: /bin/getFundManagerDetails
+      pmsListingURL: /bin/pms-strategies-data
+      pmsStrategyURL: /bin/pms-strategies-data-by-schcode
+
+# --- External APIs ---
+motilaloswal:
+  api:
+    url:
+      performanceGraphNew: https://www.motilaloswalmf.com/mutualfund/api/v1/PerformanceGraphNew
+
+# --- API Security ---
+api:
+  security:
+    aem-key: AEM_KEY_12345
+
+# -- OpenSearch Config --
+opensearch:
+  hostname: localhost
+  port: 9200
+  scheme: http
+  index-name: aem-pages
+
+
+# -- Adobe Configuration --
+adobe:
+  ims:
+    clientId: your-client-id
+    clientSecret: your-client-secret
+    scope: AdobeID,openid,aem_cloud_api
+    token:
+      url: https://ims-na1-stg1.adobelogin.com/ims/token/v3

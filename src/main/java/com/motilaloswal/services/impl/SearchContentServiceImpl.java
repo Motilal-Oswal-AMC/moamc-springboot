@@ -175,36 +175,43 @@ public class SearchContentServiceImpl implements SearchContentService {
 
     private void categorizeResult(SearchResponseDTO responseDTO, PageContent content) {
         String category = content.getCategory();
-        if (category == null) {
-            // Fallback logic if category is missing, or put in a default list
-            // For now, let's assume everything else is a blog if not specified
-            responseDTO.addBlog(content);
+
+        if (category == null || category.trim().isEmpty()) {
+            responseDTO.addOther(content);
             return;
         }
 
-        switch (category.toLowerCase()) {
+        switch (category.trim().toLowerCase()) {
+
             case "fund":
             case "funds":
                 responseDTO.addFund(content);
                 break;
+
             case "blog":
             case "blogs":
                 responseDTO.addBlog(content);
                 break;
+
             case "tool":
             case "tools":
             case "calculator":
+            case "calculators":
                 responseDTO.addTool(content);
                 break;
+
             case "faq":
             case "faqs":
                 responseDTO.addFaq(content);
                 break;
+
             case "document":
             case "documents":
-            default:
                 responseDTO.addDocument(content);
                 break;
+
+            default:
+                responseDTO.addOther(content);
         }
     }
 }

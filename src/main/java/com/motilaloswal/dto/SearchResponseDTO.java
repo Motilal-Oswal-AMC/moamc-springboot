@@ -11,6 +11,7 @@ public class SearchResponseDTO {
     private List<PageContent> tools = new ArrayList<>();
     private List<PageContent> documents = new ArrayList<>();
     private List<PageContent> faqs = new ArrayList<>();
+    private List<PageContent> others = new ArrayList<>();
     private List<String> suggestions = new ArrayList<>();
     private String redirectUrl;
 
@@ -19,4 +20,5 @@ public class SearchResponseDTO {
     public void addTool(PageContent content) { tools.add(content); }
     public void addDocument(PageContent content) { documents.add(content); }
     public void addFaq(PageContent content) { faqs.add(content); }
+    public void addOther(PageContent content) { others.add(content); }
 }

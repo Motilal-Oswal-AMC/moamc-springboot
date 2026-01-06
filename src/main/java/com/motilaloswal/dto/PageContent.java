@@ -8,6 +8,7 @@ public class PageContent {
     private String title;
     private String description;
     private String pageUrl;
+    private String assetUrl;
     private String pageType;
     private String category;
     private java.util.List<String> tags;

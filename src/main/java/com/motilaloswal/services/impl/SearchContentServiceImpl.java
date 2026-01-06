@@ -56,8 +56,8 @@ public class SearchContentServiceImpl implements SearchContentService {
 
             // Multi-match with fuzziness and boosting
             boolQuery.must(QueryBuilders.multiMatchQuery(searchTerm)
-                    .field("title", 2.0f) // Boost title
-                    .field("description")
+                    .field("title", 4.0f) // Boost title
+                    .field("description", 2.0f)
                     .field("content")
                     .field("tags")
                     .fuzziness(Fuzziness.AUTO)

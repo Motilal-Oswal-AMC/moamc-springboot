@@ -58,4 +58,10 @@ public class InternalCacheController {
         cacheUpdateService.updatePMSListing(payload, syncId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/pms-manager")
+    public ResponseEntity<Void> syncPMSManager(@RequestBody JsonNode payload, @RequestHeader(value = "X-Sync-ID", required = false) String syncId) {
+        cacheUpdateService.updatePMSManager(payload, syncId);
+        return ResponseEntity.ok().build();
+    }
 }

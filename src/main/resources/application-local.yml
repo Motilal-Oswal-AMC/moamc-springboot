@@ -7,9 +7,9 @@ spring:
     redis:
       host: localhost
       port: 6379
-      #      host: redis-13343.crce217.ap-south-1-1.ec2.redns.redis-cloud.com
-      #      port: 13343
-      #      password: dnQjXNJ3DHAlf9c0lhsoXyqtmgz0He3G
+      #      host: redis-12630.c89.us-east-1-3.ec2.cloud.redislabs.com
+      #      port: 12630
+      #      password: 9zmSHgwSgZOA4mO0Ytv6SQL1KKOvrNzw
       #      username: default
       cache:
         timeToLive: 86400 # 1 day in seconds
@@ -54,6 +54,7 @@ aem:
       individualFundManagerURL: /bin/getFundManagerDetails
       pmsListingURL: /bin/pms-strategies-data
       pmsStrategyURL: /bin/pms-strategies-data-by-schcode
+      pmsManagerURL: /content/aem-cloud-dept-backend-motilal-oswal/api/pms-manager.json
 
 # --- External APIs ---
 motilaloswal:

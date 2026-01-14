@@ -25,4 +25,10 @@ public class PublicPMSController {
         String strategyJson = pmsService.getPMSStrategy(schemeCode);
         return ResponseEntity.ok(strategyJson);
     }
+
+    @GetMapping(value = "/manager", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getPMSManager(@RequestParam("schcode") String schemeCode) {
+        String managerJson = pmsService.getPMSManager(schemeCode);
+        return ResponseEntity.ok(managerJson);
+    }
 }

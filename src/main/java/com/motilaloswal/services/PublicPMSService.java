@@ -6,4 +6,6 @@ public interface PublicPMSService {
     String getPMSListing();
 
     String getPMSStrategy(String schemeCode);
+
+    String getPMSManager(String schemeCode);
 }

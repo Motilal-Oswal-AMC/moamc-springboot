@@ -17,4 +17,6 @@ public interface CacheUpdateService {
 
     void updatePMSStrategy(JsonNode payload, String syncId);
     void updatePMSListing(JsonNode payload, String syncId);
+
+    void updatePMSManager(JsonNode payload, String syncId);
 }

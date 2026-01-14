@@ -43,7 +43,7 @@ aem:
     username: ${AEM_API_USERNAME:springboot-user}
     password: ${AEM_API_PASSWORD:MySecurePassword123}
     url:
-      baseurl: http://localhost:4505
+      baseurl: https://author-p143654-e1482275.adobeaemcloud.com
       #      individualFundURL: /bin/individual-fund-details
       #      filteredCFFundsURL: /bin/filtered-cf-funds-details
       #      individualFundManagerURL: /bin/fund-manager-details
@@ -52,6 +52,7 @@ aem:
       individualFundManagerURL: /bin/getFundManagerDetails
       pmsListingURL: /bin/pms-strategies-data
       pmsStrategyURL: /bin/pms-strategies-data-by-schcode
+      pmsManagerURL: /content/aem-cloud-dept-backend-motilal-oswal/api/pms-manager.json
 
 # --- External APIs ---
 motilaloswal:

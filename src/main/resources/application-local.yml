@@ -45,7 +45,7 @@ aem:
     username: springboot-user
     password: MySecurePassword123
     url:
-      baseurl: http://localhost:4505
+      baseurl: http://localhost:4504
       #      individualFundURL: /bin/individual-fund-details
       #      filteredCFFundsURL: /bin/filtered-cf-funds-details
       #      individualFundManagerURL: /bin/fund-manager-details

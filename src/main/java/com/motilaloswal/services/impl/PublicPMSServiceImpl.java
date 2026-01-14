@@ -44,6 +44,8 @@ public class PublicPMSServiceImpl implements PublicPMSService {
     private String AEM_PMS_LISTING_URL;
     @Value("${aem.api.url.pmsStrategyURL}")
     private String AEM_PMS_STRATEGY_URL;
+    @Value("${aem.api.url.pmsManagerURL}")
+    private String AEM_PMS_MANAGER_URL;
 
     // Cache Expirations
     private static final long CACHE_TTL_1_HOUR = 1;
@@ -104,6 +106,71 @@ public class PublicPMSServiceImpl implements PublicPMSService {
         } catch (RestClientException e) {
             LOG.error("Failed to connect to AEM for PMS Strategy: {}", e.getMessage());
             throw new AemUnavailableException("Could not connect to data source.", e);
+        }
+    }
+
+    @Override
+    public String getPMSManager(String schemeCode) {
+        final String cacheKey = "pmsManager:" + schemeCode;
+        String fullAemUrl = aemBaseURL + AEM_PMS_MANAGER_URL;
+
+        // 1. Try cache first
+        String managerJson = getFromCache(cacheKey);
+        if (managerJson != null) {
+            LOG.info("Cache HIT for pmsManager: {}", schemeCode);
+            return managerJson;
+        }
+
+        // 2. Cache MISS -> Fallback to AEM
+        LOG.warn("Cache MISS for pmsManager: {}. Calling AEM endpoint: {}", schemeCode, fullAemUrl);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+//            headers.setBearerAuth(aemTokenService.getAccessToken());
+
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("api_name", "GetPMSMangerBySchemeId");
+            requestBody.put("schcode", schemeCode);
+            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            ResponseEntity<String> aemResponse = restTemplate.postForEntity(fullAemUrl, requestEntity, String.class);
+            String aemData = aemResponse.getBody();
+
+            if (isResponseSuccessful(aemData)) {
+                cacheData(cacheKey, aemData, 0);
+            } else {
+                LOG.info("Known failure for pmsManager {}. Not caching.", schemeCode);
+            }
+            return aemData;
+
+       /* } catch (HttpClientErrorException.Unauthorized e) {
+            LOG.warn("Token expired for fundManager call. Refreshing and retrying...");
+            aemTokenService.forceRefresh();
+            return getFundManager(schemeCode);
+*/
+        } catch (HttpClientErrorException e) {
+            LOG.warn("AEM returned an HTTP error ({}) for pmsManager schcode: {}", e.getStatusCode(), schemeCode);
+            throw new AemClientException("AEM returned an HTTP error", e.getStatusCode(), e.getResponseBodyAsString(), e);
+        } catch (RestClientException e) {
+            LOG.error("Failed to connect to AEM fallback at {}: {}", fullAemUrl, e.getMessage());
+            throw new AemUnavailableException("Could not connect to the data source.", e);
+        }
+    }
+
+    private boolean isResponseSuccessful(String responseBody) {
+        if (responseBody == null || responseBody.isEmpty()) return false;
+        try {
+            JsonObject root = JsonParser.parseString(responseBody).getAsJsonObject();
+            if (root.has("data") && root.get("data").isJsonObject()) {
+                JsonObject data = root.getAsJsonObject("data");
+                if (data.has("success") && data.get("success").isJsonPrimitive()) {
+                    return data.get("success").getAsBoolean();
+                }
+            }
+            return true;
+        } catch (JsonSyntaxException | IllegalStateException e) {
+            LOG.warn("Could not parse AEM response to check for 'success' flag: {}", e.getMessage());
+            return true;
         }
     }
 

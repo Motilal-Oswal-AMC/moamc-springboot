@@ -124,6 +124,28 @@ public class CacheUpdateServiceImpl implements CacheUpdateService {
         }
     }
 
+    @Override
+    public void updatePMSManager(JsonNode payload, String syncId) {
+        // The key for the manager data is the schemeCode, as per your AEM logic
+        String schemeCode = payload.path("data").path("response").path("mangerDetails").get(0).path("managerSchcode").asText(null);
+        String redisKey = "pmsManager" + ":" + schemeCode;
+        if (schemeCode == null) {
+            log.error("Failed to update PMSManager: payload is missing 'managerSchcode'.");
+            return;
+        }
+
+        log.info("Updating cache for PMSManager related to schcode: {}", schemeCode);
+        try {
+            String managerJson = objectMapper.writeValueAsString(payload);
+            redisTemplate.opsForValue().set(redisKey, managerJson);
+            log.info("Successfully updated Redis for key: pmsmanager:{}", schemeCode);
+        } catch (DataAccessException e) {
+            handleError(syncId, redisKey, "PMSManager Update", e);
+        } catch (Exception e) {
+            handleError(syncId, redisKey, "PMSManager Update", e);
+        }
+    }
+
     private void handleError(String syncId, String key, String operation, Exception e) {
         log.error("CRITICAL: Error during {} for key: {}", operation, key, e);
         if (syncId != null) {

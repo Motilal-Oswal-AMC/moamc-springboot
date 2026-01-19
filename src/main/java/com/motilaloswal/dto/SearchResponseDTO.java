@@ -21,4 +21,5 @@ public class SearchResponseDTO {
     public void addDocument(PageContent content) { documents.add(content); }
     public void addFaq(PageContent content) { faqs.add(content); }
     public void addOther(PageContent content) { others.add(content); }
+    public void addSuggestion(String suggestion) { suggestions.add(suggestion); }
 }

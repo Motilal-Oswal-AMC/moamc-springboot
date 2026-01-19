@@ -10,6 +10,7 @@ public class PageContent {
     private String pageUrl;
     private String pageType;
     private String category;
+    private String amcType;
     private java.util.List<String> tags;
     private String publishDate; // ISO 8601 format preferred
     private String content; // Full text content for indexing

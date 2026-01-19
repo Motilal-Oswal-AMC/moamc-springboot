@@ -60,8 +60,8 @@ public class SearchContentServiceImpl implements SearchContentService {
                     .field("description", 2.0f)
                     .field("content")
                     .field("tags")
-                    .fuzziness(Fuzziness.AUTO)
-                    .operator(Operator.AND)); // Prefer all terms to match
+                    .fuzziness(Fuzziness.AUTO));
+                    // .operator(Operator.AND)); // Prefer all terms to match
 
             sourceBuilder.query(boolQuery);
             sourceBuilder.size(50); // Fetch enough results to categorize
@@ -81,11 +81,43 @@ public class SearchContentServiceImpl implements SearchContentService {
                 }
             }
 
+            // suggestions
+            List<String> suggestions = getSuggestion(searchTerm);
+            responseDTO.setSuggestions(suggestions);
+
         } catch (Exception e) {
             log.error("Error executing search", e);
         }
 
         return responseDTO;
+    }
+
+    public List<String> getSuggestion(String query) {
+        List<String> suggestions = new ArrayList<>();
+        try {
+            SearchRequest searchRequest = new SearchRequest(indexName);
+            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+
+            // CHANGE: Instead of SuggestBuilder, use a QueryBuilder on the 'title' field
+            sourceBuilder.query(org.opensearch.index.query.QueryBuilders
+                    .matchPhrasePrefixQuery("title", query));
+
+            sourceBuilder.size(5); // Limit results
+            searchRequest.source(sourceBuilder);
+
+            SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+
+            // CHANGE: Parse standard SearchHits instead of Suggest objects
+            for (SearchHit hit : searchResponse.getHits().getHits()) {
+                Map<String, Object> source = hit.getSourceAsMap();
+                if (source.containsKey("title")) {
+                    suggestions.add((String) source.get("title"));
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error fetching suggestions", e);
+        }
+        return suggestions;
     }
 
   /*  @Override

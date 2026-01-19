@@ -19,4 +19,5 @@ public class SearchResponseDTO {
     public void addTool(PageContent content) { tools.add(content); }
     public void addDocument(PageContent content) { documents.add(content); }
     public void addFaq(PageContent content) { faqs.add(content); }
+    public void addSuggestion(String suggestion) { suggestions.add(suggestion); }
 }

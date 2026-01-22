@@ -66,60 +66,8 @@ public class PublicFundServiceImpl implements PublicFundService {
 
         // 1. Try cache first
         String listingJson = getFromCache(cacheKey);
-        // if (listingJson != null) {
-        //     LOG.info("Cache HIT for fundFilteredLists.");
-        //     return listingJson;
-        // }
         if (listingJson != null) {
             LOG.info("Cache HIT for fundFilteredLists.");
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                // 1. Parse string into a JsonNode (assuming it's an array of objects)
-                JsonNode rootNode = mapper.readTree(listingJson);
-
-                // Check if it's an object first, then get the specific field
-                if (rootNode.isObject()) {
-                    JsonNode actualList = rootNode.get("cfDataObjs");
-                    if (actualList != null && actualList.isArray()) {
-                        // Run your sorting logic on 'actualList'
-                            List<JsonNode> nfoFunds = new ArrayList<>();
-                            List<JsonNode> regularFunds = new ArrayList<>();
-
-                            // 2. Separate funds based on the "nfo" tag
-                            for (JsonNode fund : actualList) {
-                                boolean isNfo = false;
-                                JsonNode taggingSection = fund.get("fundsTaggingSection");
-
-                                if (taggingSection != null && taggingSection.isArray()) {
-                                    for (JsonNode tag : taggingSection) {
-                                        if (tag.asText().contains(":nfo")) {
-                                            isNfo = true;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (isNfo) {
-                                    nfoFunds.add(fund);
-                                } else {
-                                    regularFunds.add(fund);
-                                }
-                            }
-
-                            // 3. Reconstruct the list with NFOs at the top
-                            ArrayNode sortedArray = mapper.createArrayNode();
-                            sortedArray.addAll(nfoFunds);
-                            sortedArray.addAll(regularFunds);
-
-                            // 4. Convert back to String
-                            listingJson = mapper.writeValueAsString(sortedArray);
-                    }
-                }
-
-            } catch (Exception e) {
-                LOG.error("Error processing JSON sorting", e);
-                // Fallback to original listingJson if sorting fails
-            }
             return listingJson;
         }
 

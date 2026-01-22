@@ -12,6 +12,7 @@ import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.unit.Fuzziness;
 import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.MultiMatchQueryBuilder;
 import org.opensearch.index.query.Operator;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
@@ -55,13 +56,36 @@ public class SearchContentServiceImpl implements SearchContentService {
             BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
             // Multi-match with fuzziness and boosting
-            boolQuery.must(QueryBuilders.multiMatchQuery(searchTerm)
-                    .field("title", 4.0f) // Boost title
-                    .field("description", 2.0f)
-                    .field("content")
-                    .field("tags")
-                    .fuzziness(Fuzziness.AUTO));
-                    // .operator(Operator.AND)); // Prefer all terms to match
+//            boolQuery.must(QueryBuilders.multiMatchQuery(searchTerm)
+//                    .field("title", 4.0f) // Boost title
+//                    .field("description", 2.0f)
+//                    .field("content")
+//                    .field("tags")
+//                    .fuzziness(Fuzziness.AUTO));
+//                    // .operator(Operator.AND)); // Prefer all terms to match
+
+            boolQuery.must(
+                    QueryBuilders.multiMatchQuery(searchTerm)
+                            .field("title", 5.0f)
+                            .field("description", 3.0f)
+                            .field("content")
+                            .field("tags")
+                            .type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+                            .operator(Operator.OR)
+            );
+
+            boolQuery.should(
+                    QueryBuilders.multiMatchQuery(searchTerm)
+                            .field("title", 2.0f)
+                            .type(MultiMatchQueryBuilder.Type.BEST_FIELDS)
+                            .fuzziness(Fuzziness.AUTO)
+            );
+
+            boolQuery.should(
+                    QueryBuilders.multiMatchQuery(searchTerm)
+                            .field("title", 8.0f)
+                            .type(MultiMatchQueryBuilder.Type.PHRASE)
+            );
 
             sourceBuilder.query(boolQuery);
             sourceBuilder.size(50); // Fetch enough results to categorize

@@ -53,42 +53,40 @@ public class SearchContentServiceImpl implements SearchContentService {
             SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
             // 2. Build Query
-            BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+             BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
-            // Multi-match with fuzziness and boosting
-//            boolQuery.must(QueryBuilders.multiMatchQuery(searchTerm)
-//                    .field("title", 4.0f) // Boost title
-//                    .field("description", 2.0f)
-//                    .field("content")
-//                    .field("tags")
-//                    .fuzziness(Fuzziness.AUTO));
-//                    // .operator(Operator.AND)); // Prefer all terms to match
-
+            /* 1. Primary text search */
             boolQuery.must(
                     QueryBuilders.multiMatchQuery(searchTerm)
                             .field("title", 5.0f)
                             .field("description", 3.0f)
                             .field("content")
                             .field("tags")
-                            .type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
+                            .type(MultiMatchQueryBuilder.Type.BEST_FIELDS)
                             .operator(Operator.OR)
             );
 
+            /* 2. Fuzzy title match */
             boolQuery.should(
-                    QueryBuilders.multiMatchQuery(searchTerm)
-                            .field("title", 2.0f)
-                            .type(MultiMatchQueryBuilder.Type.BEST_FIELDS)
+                    QueryBuilders.matchQuery("title", searchTerm)
                             .fuzziness(Fuzziness.AUTO)
+                            .boost(2.0f)
             );
 
+            /* 3. Exact phrase match (very strong signal) */
             boolQuery.should(
-                    QueryBuilders.multiMatchQuery(searchTerm)
-                            .field("title", 8.0f)
-                            .type(MultiMatchQueryBuilder.Type.PHRASE)
+                    QueryBuilders.matchPhraseQuery("title", searchTerm)
+                            .boost(8.0f)
+            );
+
+            /* 4. CATEGORY BOOST — TOP PRIORITY */
+            boolQuery.should(
+                    QueryBuilders.termQuery("category.keyword", "fund")
+                            .boost(15.0f)   // increase if needed
             );
 
             sourceBuilder.query(boolQuery);
-            sourceBuilder.size(50); // Fetch enough results to categorize
+            sourceBuilder.size(500);
 
             searchRequest.source(sourceBuilder);
 

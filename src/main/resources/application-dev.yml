@@ -47,11 +47,12 @@ aem:
       #      individualFundURL: /bin/individual-fund-details
       #      filteredCFFundsURL: /bin/filtered-cf-funds-details
       #      individualFundManagerURL: /bin/fund-manager-details
-      individualFundURL: /content/aem-cloud-motilal-oswal/api/fund.json
-      filteredCFFundsURL: /bin/cfmodeldata-filtered
-      individualFundManagerURL: /bin/getFundManagerDetails
-      pmsListingURL: /bin/pms-strategies-data
-      pmsStrategyURL: /bin/pms-strategies-data-by-schcode
+      individualFundURL: /content/aem-cloud-dept-backend-motilal-oswal/api/fund.json
+      filteredCFFundsURL: /content/aem-cloud-dept-backend-motilal-oswal/api/funds-filtered-data.json
+      individualFundManagerURL: /content/aem-cloud-dept-backend-motilal-oswal/api/fund-manager.json
+      pmsListingURL: /content/aem-cloud-dept-backend-motilal-oswal/api/pms-strategies.json
+      pmsStrategyURL: /content/aem-cloud-dept-backend-motilal-oswal/api/pms-strategies-by-schcode.json
+      pmsManagerURL: /content/aem-cloud-dept-backend-motilal-oswal/api/pms-manager.json
 
 # --- External APIs ---
 motilaloswal:
